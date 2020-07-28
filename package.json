@@ -22,7 +22,7 @@
   "main": "src/main.js",
   "name": "bitrix_gate",
   "scripts": {
-    "start": "node dst/main.js",
+    "start": "node src/main.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rollup -c",
     "watch": "rollup -c -w"

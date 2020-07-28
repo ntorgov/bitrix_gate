@@ -46,7 +46,7 @@ class Bitrix {
 	}
 
 	async makeRequest(method, data) {
-		console.log('Ready for request' + method, data);
+		console.log('Ready for request ' + method, data);
 
 		const response = await axios({
 				method: 'POST',
