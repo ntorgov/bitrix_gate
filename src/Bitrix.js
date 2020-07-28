@@ -14,10 +14,33 @@ class Bitrix {
 		}
 	}
 
+	/**
+	 * Установка сообщения как прочитанного
+	 * @param {string|number} chatId ID чата
+	 * @param {string|number} messageId ID сообщения
+	 * @returns {Promise<void>}
+	 * @constructor
+	 */
+	async MarkMessageAsRead(chatId, messageId) {
+		let method = 'im.dialog.read';
+
+		let result = await this.makeRequest(method, {DIALOG_ID: 'chat' + chatId, MESSAGE_ID: messageId});
+
+		return result;
+	}
+
 	async GetChannelMessages(channelId) {
 		let method = 'im.dialog.messages.get';
 
 		let result = await this.makeRequest(method, {DIALOG_ID: 'chat' + channelId});
+
+		return result;
+	}
+
+	async AddChannelMessage(channelId, message) {
+		let method = 'im.message.add';
+
+		let result = await this.makeRequest(method, {DIALOG_ID: 'chat' + channelId, MESSAGE: message});
 
 		return result;
 	}
@@ -47,6 +70,8 @@ class Bitrix {
 			let channelId = data.data.result.chat_id;
 
 			switch (method) {
+				case 'im.dialog.read':
+					break;
 				case 'im.dialog.messages.get':
 
 					console.log('Looking for unread messages');

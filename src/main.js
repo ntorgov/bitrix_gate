@@ -1,7 +1,7 @@
 'use strict';
 
 const {Client, MessageEmbed} = require('discord.js');
-//const Bitrix = require('./Bitrix');
+const Bitrix = require('./Bitrix');
 const axios = require('axios');
 
 const client = new Client();
@@ -11,6 +11,8 @@ const channels = [
 	{id: '737549039767388192', name: 'основной', bitrix: '', type: 'chat'},
 	{id: '737549324421955616', name: 'echo', bitrix: '122', type: 'user'},
 	{id: '737601703427440711', name: 'чат-конченных-людей', bitrix: '968', type: 'chat'},
+	{id: '737672107701567499', name: 'сетевые-вопросы', bitrix: '632', type: 'chat'},
+	{id: '737672236739330129', name: 'forexchief-разработка', bitrix: '392', type: 'chat'},
 ];
 
 const authors = {
@@ -58,10 +60,14 @@ client.on('ready', () => {
 
 					console.log('Looking for unread messages');
 
-					for (let messageCounter = messages.length - 1; messageCounter > 0; messageCounter--) {
+					for (let messageCounter = messages.length - 1; messageCounter >= 0; messageCounter--) {
 
 						let message = messages[messageCounter];
-						
+
+						if(channel.bitrix==='392') {
+							// console.log(message);
+						}
+
 						if (message.unread === true) {
 
 							console.log('Unread message found, looking for author');
@@ -78,7 +84,7 @@ client.on('ready', () => {
 								}
 							}
 
-							if (author !== null) {
+							if (author !== null && author !== 122) {
 								console.log('Author found: ' + author.name);
 
 								// region Отправка дубликата в discord
@@ -95,12 +101,21 @@ client.on('ready', () => {
 							console.log('Unread message ' + message.text);
 						}
 					}
+
+					// region Mark all as read
+					let bitrix = new Bitrix();
+
+					bitrix.MarkMessageAsRead(channel.bitrix, messages[0].id);
+
+					// endregion
 				});
 			} else {
 				console.log('Skipping ' + channel.bitrix + ' bitrix analog for ' + channel.name);
 				// console.log(channel);
 			}
 		});
+
+		console.info('Checking done');
 
 	}, 10000);
 });
@@ -114,7 +129,23 @@ client.on('message', msg => {
 	// 	client.channels.cache.get(channels.echo.id).send('Text');
 	// }
 
-	if (msg.content === 'else') {
+	if(msg.content!==''){
+		let bitrixChannelId = 0;
+		for(let counter = 0;counter<=channels.length-1;counter++){
+			if(channels[counter].id===msg.channel.id){
+				bitrixChannelId = channels[counter].bitrix;
+			}
+		}
+
+		if(bitrixChannelId!==0) {
+
+			let bitrix = new Bitrix();
+
+			bitrix.AddChannelMessage(bitrixChannelId, msg.content);
+		}
+	}
+
+	if (msg.content === 'detect') {
 		client.channels.cache.get(msg.channel.id).send(msg.channel.name + ' id #' + msg.channel.id);
 	}
 
