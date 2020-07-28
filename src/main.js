@@ -56,15 +56,12 @@ client.on('ready', () => {
 
 					let channelId = data.data.result.chat_id;
 
-					// switch (method) {
-					// 	case 'im.dialog.messages.get':
-
 					console.log('Looking for unread messages');
 
 					for (let messageCounter = messages.length - 1; messageCounter > 0; messageCounter--) {
 
-						//messages.forEach(message => {
 						let message = messages[messageCounter];
+						
 						if (message.unread === true) {
 
 							console.log('Unread message found, looking for author');
@@ -84,24 +81,11 @@ client.on('ready', () => {
 							if (author !== null) {
 								console.log('Author found: ' + author.name);
 
-								// for(let channelCounter = 0;channelCounter<channels.length;channelCounter++){
-								// 	console.log('Looking channel for repost');
-								//
-								// 	if(channelId===channels[channelCounter]) {
-								console.log(author);
+								// region Отправка дубликата в discord
 
-// region Отправка дубликата в discord
+								const embed = new MessageEmbed().setAuthor(author.name, author.avatar).
+									setDescription(message.text);
 
-								const embed = new MessageEmbed()
-									// Set the title of the field
-									.setAuthor(author.name, author.avatar)
-									//.setTitle('SomeUser')
-									// Set the color of the embed
-									// .setColor(0xff0000)
-									// Set the main content of the embed
-									.setDescription(message.text);
-
-								// @ts-ignore
 								client.channels.cache.get(channel.id).send(embed);
 
 								// endregion
@@ -111,17 +95,7 @@ client.on('ready', () => {
 							console.log('Unread message ' + message.text);
 						}
 					}
-					//);
-					// 		break;
-					// }
-					//console.log(data.data);
-					//return data.data;
 				});
-				//
-				// let bitrix = new Bitrix(channel);
-				//
-				// let result = await bitrix.GetChannelMessages(channel.bitrix);
-				// console.log('result is', result);
 			} else {
 				console.log('Skipping ' + channel.bitrix + ' bitrix analog for ' + channel.name);
 				// console.log(channel);
