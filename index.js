@@ -4,7 +4,7 @@ const messageEmbed = new MessageEmbed();
 
 const channels = {
 	main: {id: '737549039767388192', name: 'основной', bitrix: ''},
-	echo: {id: '737549324421955616', name: 'echo', bitrix: ''},
+	echo: {id: '737549324421955616', name: 'echo', bitrix: '122'},
 };
 
 const authors = {
