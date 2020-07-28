@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "module": "umd",
+    "target": "ES2020",
+    "moduleResolution": "node",
+    "outDir": "dst",
+    "declaration": false,
+    "strict": true,
+    "sourceMap": true,
+    "alwaysStrict": true,
+    "removeComments": true,
+    "esModuleInterop": false,
+    "typeRoots": [
+      "./node_modules/@types"
+    ]
+  },
+  "exclude": [
+    "./dst/*",
+    "./node_modules/*"
+  ],
+  "include": [
+    "./src/**/*.ts"
+  ]
+}
