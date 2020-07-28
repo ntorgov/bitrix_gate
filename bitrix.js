@@ -12,4 +12,13 @@ axios({
 	},
 ).then(function(data) {
 	console.log(data);
+	/**
+	 * Результаты
+	 * @type {BitrixChannelMessages}
+	 */
+	let result = data.data.result;
+
+	console.log(result);
+
+	console.info(result.messages[0].text);
 });
