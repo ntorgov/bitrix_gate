@@ -1,7 +1,6 @@
 'use strict'
 
 import {Client, MessageEmbed} from 'discord.js';
-
 import {Bitrix} from './Bitrix';
 
 const client = new Client();
@@ -19,6 +18,25 @@ const authors = {
         icon: 'https://bitrix2.cdnvideo.ru/b315285/resize_cache/47/ff58db95aecdfa09ae61b51b5fd8f63f/main/c50/c50fc8b187db2c88c872746c4656a47d/123.jpg',
     },
 };
+
+export default class Application {
+
+    private static _client: Client;
+
+    static start() {
+        console.log('Init');
+
+        this._client = new Client();
+        // In the login method, you must specify the glob string to load your classes (for the framework).
+        // In this case that's not necessary because the entry point of your application is this file.
+        this._client.login('NzM3NTQ4NDIyNjgwMjgxMjI2.Xx-9fg.8-piL6Y3iq0gRPliGl-rWKLOF2M');
+
+
+    }
+
+}
+
+Application.start();
 
 client.on('ready', () => {
     // @ts-ignore
@@ -73,4 +91,4 @@ client.on('message', msg => {
     }
 });
 
-client.login('NzM3NTQ4NDIyNjgwMjgxMjI2.Xx-9fg.8-piL6Y3iq0gRPliGl-rWKLOF2M');
+// client.login('NzM3NTQ4NDIyNjgwMjgxMjI2.Xx-9fg.8-piL6Y3iq0gRPliGl-rWKLOF2M');
