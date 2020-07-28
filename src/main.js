@@ -1,7 +1,8 @@
 'use strict';
 
 const {Client, MessageEmbed} = require('discord.js');
-const Bitrix = require('./Bitrix');
+//const Bitrix = require('./Bitrix');
+const axios = require('axios');
 
 const client = new Client();
 const messageEmbed = new MessageEmbed();
@@ -26,14 +27,101 @@ client.on('ready', () => {
 	setInterval(function() {
 		console.info('Time to check bitrix');
 
-		channels.forEach(async channel => {
+		channels.forEach(channel => {
 			if (channel.type === 'chat' && channel.bitrix !== '') {
 				console.log('Checking ' + channel.bitrix + ' bitrix analog for ' + channel.name);
 
-				let bitrix = new Bitrix(channel);
+				let method = 'im.dialog.messages.get';
 
-				let result = await bitrix.GetChannelMessages(channel.bitrix);
-				console.log('result is', result);
+				let data = {DIALOG_ID: 'chat' + channel.bitrix};
+
+				const response = axios({
+						method: 'POST',
+						url: 'https://webclassic.bitrix24.ru/rest/122' + '/' + 'f6ecshxdtphunn6d' + '/' + method,
+						data: data,
+					},
+				).then(data => {
+
+					/**
+					 *
+					 * @type {BitrixMessage[]}
+					 */
+					let messages = data.data.result.messages;
+
+					/**
+					 *
+					 * @type {BitrixUser[]}
+					 */
+					let users = data.data.result.users;
+
+					let channelId = data.data.result.chat_id;
+
+					// switch (method) {
+					// 	case 'im.dialog.messages.get':
+
+					console.log('Looking for unread messages');
+
+					for (let messageCounter = messages.length - 1; messageCounter > 0; messageCounter--) {
+
+						//messages.forEach(message => {
+						let message = messages[messageCounter];
+						if (message.unread === true) {
+
+							console.log('Unread message found, looking for author');
+
+							/**
+							 *
+							 * @type {BitrixUser|null}
+							 */
+							let author = null;
+
+							for (let counter = 0; counter < users.length; counter++) {
+								if (users[counter].id === message.author_id) {
+									author = users[counter];
+								}
+							}
+
+							if (author !== null) {
+								console.log('Author found: ' + author.name);
+
+								// for(let channelCounter = 0;channelCounter<channels.length;channelCounter++){
+								// 	console.log('Looking channel for repost');
+								//
+								// 	if(channelId===channels[channelCounter]) {
+								console.log(author);
+
+// region Отправка дубликата в discord
+
+								const embed = new MessageEmbed()
+									// Set the title of the field
+									.setAuthor(author.name, author.avatar)
+									//.setTitle('SomeUser')
+									// Set the color of the embed
+									// .setColor(0xff0000)
+									// Set the main content of the embed
+									.setDescription(message.text);
+
+								// @ts-ignore
+								client.channels.cache.get(channel.id).send(embed);
+
+								// endregion
+
+							}
+
+							console.log('Unread message ' + message.text);
+						}
+					}
+					//);
+					// 		break;
+					// }
+					//console.log(data.data);
+					//return data.data;
+				});
+				//
+				// let bitrix = new Bitrix(channel);
+				//
+				// let result = await bitrix.GetChannelMessages(channel.bitrix);
+				// console.log('result is', result);
 			} else {
 				console.log('Skipping ' + channel.bitrix + ' bitrix analog for ' + channel.name);
 				// console.log(channel);
