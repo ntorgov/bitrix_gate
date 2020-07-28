@@ -26,13 +26,13 @@ client.on('ready', () => {
 	setInterval(function() {
 		console.info('Time to check bitrix');
 
-		channels.forEach(channel => {
+		channels.forEach(async channel => {
 			if (channel.type === 'chat' && channel.bitrix !== '') {
 				console.log('Checking ' + channel.bitrix + ' bitrix analog for ' + channel.name);
 
-				let bitrix = new Bitrix();
+				let bitrix = new Bitrix(channel);
 
-				let result = bitrix.GetChannelMessages(channel.bitrix);
+				let result = await bitrix.GetChannelMessages(channel.bitrix);
 				console.log('result is', result);
 			} else {
 				console.log('Skipping ' + channel.bitrix + ' bitrix analog for ' + channel.name);
