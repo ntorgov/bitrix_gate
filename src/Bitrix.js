@@ -1,10 +1,10 @@
 const axios = require('axios');
+const Config = require('./Config');
 
 class Bitrix {
-
-	BITRIX_HOST = 'https://webclassic.bitrix24.ru/rest/122/f6ecshxdtphunn6d/';
-
 	channelData = {};
+
+	_config = new Config();
 
 	constructor(channelData) {
 		console.log('Init');
@@ -24,7 +24,7 @@ class Bitrix {
 	async MarkMessageAsRead(chatId, messageId) {
 		let method = 'im.dialog.read';
 
-		let result = await this.makeRequest(method, {DIALOG_ID: 'chat' + chatId, MESSAGE_ID: messageId});
+		let result = await this.makeRequest(method, {DIALOG_ID: chatId, MESSAGE_ID: messageId});
 
 		return result;
 	}
@@ -32,7 +32,7 @@ class Bitrix {
 	async GetChannelMessages(channelId) {
 		let method = 'im.dialog.messages.get';
 
-		let result = await this.makeRequest(method, {DIALOG_ID: 'chat' + channelId});
+		let result = await this.makeRequest(method, {DIALOG_ID: channelId});
 
 		return result;
 	}
@@ -40,7 +40,7 @@ class Bitrix {
 	async AddChannelMessage(channelId, message) {
 		let method = 'im.message.add';
 
-		let result = await this.makeRequest(method, {DIALOG_ID: 'chat' + channelId, MESSAGE: message});
+		let result = await this.makeRequest(method, {DIALOG_ID: channelId, MESSAGE: message});
 
 		return result;
 	}
@@ -50,7 +50,7 @@ class Bitrix {
 
 		const response = await axios({
 				method: 'POST',
-				url: 'https://webclassic.bitrix24.ru/rest/122' + '/' + 'f6ecshxdtphunn6d' + '/' + method,
+				url: this._config.BITRIX_URL + method,
 				data: data,
 			},
 		).then(async data => {
@@ -73,17 +73,11 @@ class Bitrix {
 				case 'im.dialog.read':
 					break;
 				case 'im.dialog.messages.get':
-
-					console.log('Looking for unread messages');
-
 					for (let messageCounter = 0; messageCounter < messages.length; messageCounter++) {
 
 						//messages.forEach(message => {
 						let message = messages[messageCounter];
 						if (message.unread === false) {
-
-							console.log('Unread message found, looking for author');
-
 							/**
 							 *
 							 * @type {BitrixUser|null}
@@ -96,17 +90,7 @@ class Bitrix {
 							}
 
 							if (author !== null) {
-								console.log('Author found: ' + author.name);
-
-								// for(let channelCounter = 0;channelCounter<channels.length;channelCounter++){
-								// 	console.log('Looking channel for repost');
-								//
-								// 	if(channelId===channels[channelCounter]) {
-								console.log(this.channelData);
-								// throw new Error('Stop');
 								return message;
-								// 	}
-								// }
 							}
 
 							console.log('Unread message ' + message.text);
@@ -115,8 +99,6 @@ class Bitrix {
 					//);
 					break;
 			}
-			//console.log(data.data);
-			//return data.data;
 		});
 	}
 }
