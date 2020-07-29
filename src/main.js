@@ -17,7 +17,7 @@ client.on('ready', () => {
 	setInterval(function() {
 
 		config.Channels.forEach(channel => {
-			if (channel.type === 'chat' && channel.bitrix !== '') {
+			if (/* channel.type === 'chat' && */ channel.bitrix !== '') {
 
 				if (config.DEBUG_MODE) {
 					console.log('Checking ' + channel.bitrix + ' bitrix analog for ' + channel.name);
@@ -124,9 +124,9 @@ client.on('ready', () => {
 client.on('message', msg => {
 	if (msg.content !== '' && msg.content !== 'detect') {
 		let bitrixChannelId = 0;
-		for (let counter = 0; counter <= channels.length - 1; counter++) {
-			if (channels[counter].id === msg.channel.id) {
-				bitrixChannelId = channels[counter].bitrix;
+		for (let counter = 0; counter <= config.Channels.length - 1; counter++) {
+			if (config.Channels[counter].id === msg.channel.id) {
+				bitrixChannelId = config.Channels[counter].bitrix;
 			}
 		}
 
