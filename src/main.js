@@ -16,8 +16,12 @@ client.on('ready', () => {
 
 	setInterval(function() {
 
-		config.Channels.forEach(channel => {
-			if (/* channel.type === 'chat' && */ channel.bitrix !== '') {
+		config.Channels.forEach((channel, index) => {
+			if (channel.counter >= 6) {
+				channel.counter = 0;
+				config.Channels[index].counter = 0;
+			}
+			if (channel.counter <= 1 && channel.bitrix !== '') {
 
 				if (config.DEBUG_MODE) {
 					console.log('Checking ' + channel.bitrix + ' bitrix analog for ' + channel.name);
@@ -105,6 +109,10 @@ client.on('ready', () => {
 						let bitrix = new Bitrix();
 
 						bitrix.MarkMessageAsRead(channel.bitrix, messages[0].id);
+
+						config.Channels[index].counter = 0;
+					} else {
+						config.Channels[index].counter++;
 					}
 
 					// endregion
