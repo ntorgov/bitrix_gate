@@ -15,15 +15,17 @@ client.on('ready', () => {
 	console.log(`Logged in as ${client.user.tag}!`);
 
 	setInterval(function() {
-		console.info('Time to check bitrix');
 
 		config.Channels.forEach(channel => {
 			if (channel.type === 'chat' && channel.bitrix !== '') {
-				console.log('Checking ' + channel.bitrix + ' bitrix analog for ' + channel.name);
+
+				if (config.DEBUG_MODE) {
+					console.log('Checking ' + channel.bitrix + ' bitrix analog for ' + channel.name);
+				}
 
 				let method = 'im.dialog.messages.get';
 
-				let data = {DIALOG_ID: 'chat' + channel.bitrix};
+				let data = {DIALOG_ID: channel.bitrix};
 
 				const response = axios({
 						method: 'POST',
@@ -46,8 +48,6 @@ client.on('ready', () => {
 
 					let channelId = data.data.result.chat_id;
 
-					console.log('Looking for unread messages');
-
 					/**
 					 * Флаг есть ли не прочитанные сообщения
 					 * @type {boolean}
@@ -59,8 +59,6 @@ client.on('ready', () => {
 						let message = messages[messageCounter];
 
 						if (message.unread === true) {
-
-							console.log('Unread message found, looking for author');
 
 							haveUnreadMessages = true;
 
@@ -76,14 +74,12 @@ client.on('ready', () => {
 								}
 							}
 
-							if (author !== null && author !== 122) {
-								console.log('Author found: ' + author.name);
-
+							if (author !== null && author !== config.BITRIX_USER) {
 								// region Отправка дубликата в discord
 
 								let messageText = message.text;
 
-								if(messageText===''){
+								if (messageText === '') {
 									messageText = '__Какой-то контент__';
 								}
 
@@ -96,23 +92,27 @@ client.on('ready', () => {
 
 							}
 
-							console.log('Unread message ' + message.text);
+							if (config.DEBUG_MODE) {
+								console.log('Unread message ' + message.text);
+							}
 						}
 					}
 
 					// region Mark all as read
 
-					if(haveUnreadMessages) {
+					if (haveUnreadMessages) {
 
 						let bitrix = new Bitrix();
 
 						bitrix.MarkMessageAsRead(channel.bitrix, messages[0].id);
 					}
+
 					// endregion
 				});
 			} else {
-				console.log('Skipping ' + channel.bitrix + ' bitrix analog for ' + channel.name);
-				// console.log(channel);
+				if (config.DEBUG_MODE) {
+					console.log('Skipping ' + channel.bitrix + ' bitrix analog for ' + channel.name);
+				}
 			}
 		});
 

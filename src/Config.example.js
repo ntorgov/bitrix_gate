@@ -17,4 +17,6 @@ class Config {
 		{id: '737672236739330129', name: 'разработка', bitrix: 'chat392', type: 'chat'},
 		{id: '737737957145968690', name: 'тестовый-канал', bitrix: 'chat5522', type: 'chat'},
 	];
+
+	DEBUG_MODE = false;
 }
