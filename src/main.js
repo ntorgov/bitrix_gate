@@ -17,11 +17,11 @@ client.on('ready', () => {
 	setInterval(function() {
 
 		config.Channels.forEach((channel, index) => {
-			if (channel.counter >= 6) {
+			if (channel.counter >= 3) {
 				channel.counter = 0;
 				config.Channels[index].counter = 0;
 			}
-			if (channel.counter <= 1 && channel.bitrix !== '') {
+			if (channel.counter < 1 && channel.bitrix !== '') {
 
 				if (config.DEBUG_MODE) {
 					console.log('Checking ' + channel.name);
@@ -58,46 +58,53 @@ client.on('ready', () => {
 					 */
 					let haveUnreadMessages = false;
 
-					for (let messageCounter = messages.length - 1; messageCounter >= 0; messageCounter--) {
+					if (channel.lastId === messages[0].id) {
+						haveUnreadMessages = true;
+					}
 
-						let message = messages[messageCounter];
+					if (!haveUnreadMessages) {
 
-						if (message.unread === true) {
+						for (let messageCounter = messages.length - 1; messageCounter >= 0; messageCounter--) {
 
-							haveUnreadMessages = true;
+							let message = messages[messageCounter];
 
-							/**
-							 *
-							 * @type {BitrixUser|null}
-							 */
-							let author = null;
+							if (message.unread === true) {
 
-							for (let counter = 0; counter < users.length; counter++) {
-								if (users[counter].id === message.author_id) {
-									author = users[counter];
-								}
-							}
+								haveUnreadMessages = true;
 
-							if (author !== null && author !== config.BITRIX_USER) {
-								// region Отправка дубликата в discord
+								/**
+								 *
+								 * @type {BitrixUser|null}
+								 */
+								let author = null;
 
-								let messageText = message.text;
-
-								if (messageText === '') {
-									messageText = '__Какой-то контент__';
+								for (let counter = 0; counter < users.length; counter++) {
+									if (users[counter].id === message.author_id) {
+										author = users[counter];
+									}
 								}
 
-								const embed = new MessageEmbed().setAuthor(author.name, author.avatar).
-									setDescription(messageText);
+								if (author !== null && author !== config.BITRIX_USER) {
+									// region Отправка дубликата в discord
 
-								client.channels.cache.get(channel.id).send(embed);
+									let messageText = message.text;
 
-								// endregion
+									if (messageText === '') {
+										messageText = '__Какой-то контент__';
+									}
 
-							}
+									const embed = new MessageEmbed().setAuthor(author.name, author.avatar).
+										setDescription(messageText);
 
-							if (config.DEBUG_MODE) {
-								console.log('Unread message ' + message.text);
+									client.channels.cache.get(channel.id).send(embed);
+
+									// endregion
+
+								}
+
+								if (config.DEBUG_MODE) {
+									console.log('Unread message ' + message.text);
+								}
 							}
 						}
 					}
@@ -110,16 +117,21 @@ client.on('ready', () => {
 
 						bitrix.MarkMessageAsRead(channel.bitrix, messages[0].id);
 
+						config.Channels[index].lastId = messages[0].id;
 						config.Channels[index].counter = 0;
 					} else {
 						config.Channels[index].counter++;
 					}
 
 					// endregion
+				}).catch(error => {
+					if (config.DEBUG_MODE) {
+						console.warn('Error requesting messages', error);
+					}
 				});
 			} else {
 				if (config.DEBUG_MODE) {
-					console.log('Skipping ' + channel.name +' '+config.Channels[index].counter + ' times ');
+					console.log('Skipping ' + channel.name + ' ' + config.Channels[index].counter + ' times ');
 				}
 
 				config.Channels[index].counter++;
