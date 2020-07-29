@@ -24,7 +24,7 @@ client.on('ready', () => {
 			if (channel.counter <= 1 && channel.bitrix !== '') {
 
 				if (config.DEBUG_MODE) {
-					console.log('Checking ' + channel.bitrix + ' bitrix analog for ' + channel.name);
+					console.log('Checking ' + channel.name);
 				}
 
 				let method = 'im.dialog.messages.get';
@@ -119,8 +119,10 @@ client.on('ready', () => {
 				});
 			} else {
 				if (config.DEBUG_MODE) {
-					console.log('Skipping ' + channel.bitrix + ' bitrix analog for ' + channel.name);
+					console.log('Skipping ' + channel.name +' '+config.Channels[index].counter + ' times ');
 				}
+
+				config.Channels[index].counter++;
 			}
 		});
 
@@ -135,6 +137,7 @@ client.on('message', msg => {
 		for (let counter = 0; counter <= config.Channels.length - 1; counter++) {
 			if (config.Channels[counter].id === msg.channel.id) {
 				bitrixChannelId = config.Channels[counter].bitrix;
+				config.Channels[counter].counter = 0;
 			}
 		}
 
