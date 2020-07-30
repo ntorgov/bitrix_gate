@@ -4,6 +4,7 @@ const {Client, MessageEmbed} = require('discord.js');
 const Bitrix = require('./Bitrix');
 const axios = require('axios');
 const Config = require('./Config');
+const colors = require('colors');
 
 const client = new Client();
 const messageEmbed = new MessageEmbed();
@@ -12,9 +13,16 @@ const config = new Config();
 
 client.on('ready', () => {
 	// @ts-ignore
-	console.log(`Logged in as ${client.user.tag}!`);
+	console.log('Logged in as '.grey + client.user.tag.cyan + '!'.grey);
+
+	let checkingCounter = 0;
 
 	setInterval(function() {
+
+		if (config.DEBUG_MODE) {
+			console.group(
+				'[' + (new Date()).toString() + ']'.grey + ' Checking #'.white + checkingCounter.toString().yellow);
+		}
 
 		config.Channels.forEach((channel, index) => {
 			if (channel.counter >= 3) {
@@ -24,7 +32,7 @@ client.on('ready', () => {
 			if (channel.counter < 1 && channel.bitrix !== '') {
 
 				if (config.DEBUG_MODE) {
-					console.log('Checking ' + channel.name);
+					console.log('Checking '.white + channel.name.yellow);
 				}
 
 				let method = 'im.dialog.messages.get';
@@ -84,7 +92,7 @@ client.on('ready', () => {
 									}
 								}
 
-								if (author !== null && author !== config.BITRIX_USER) {
+								if (author !== null && author.id !== config.BITRIX_USER) {
 									// region Отправка дубликата в discord
 
 									let messageText = message.text;
@@ -131,14 +139,20 @@ client.on('ready', () => {
 				});
 			} else {
 				if (config.DEBUG_MODE) {
-					console.log('Skipping ' + channel.name + ' ' + config.Channels[index].counter + ' times ');
+					console.log(
+						'Skipping '.white + channel.name.yellow + ' '.white + config.Channels[index].counter +
+						' times '.white);
 				}
 
 				config.Channels[index].counter++;
 			}
 		});
 
-		console.info('Checking done');
+		if (config.DEBUG_MODE) {
+			console.groupEnd();
+		}
+
+		checkingCounter++;
 
 	}, 10000);
 });
