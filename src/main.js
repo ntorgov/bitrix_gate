@@ -58,7 +58,7 @@ client.on('ready', () => {
 					 */
 					let haveUnreadMessages = false;
 
-					if (channel.lastId === messages[0].id && channel.lastId !== 0) {
+					if (channel.lastId === messages[0].id && channel.lastId !== 0 && messages[0].unread) {
 						haveUnreadMessages = true;
 					}
 
