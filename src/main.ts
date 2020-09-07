@@ -1,7 +1,9 @@
 'use strict';
+//import {IChannel} from "./interfaces/IChannel";
 
 const {Client, MessageEmbed} = require('discord.js');
 const Bitrix = require('./Bitrix');
+// import {Bitrix = require('./Bitrix');
 const axios = require('axios');
 const Config = require('./Config');
 const colors = require('colors');
@@ -10,6 +12,8 @@ const client = new Client();
 const messageEmbed = new MessageEmbed();
 
 const config = new Config();
+
+let messagesList = [];
 
 client.on('ready', () => {
 	// @ts-ignore
@@ -46,6 +50,10 @@ client.on('ready', () => {
 					},
 				).then(data => {
 
+					if(typeof(messagesList[channel.bitrix])==='undefined'){
+						messagesList[channel.bitrix]=[];
+					}
+
 					/**
 					 *
 					 * @type {BitrixMessage[]}
@@ -59,6 +67,10 @@ client.on('ready', () => {
 					let users = data.data.result.users;
 
 					let channelId = data.data.result.chat_id;
+
+					messages.forEach(function(messageData) {
+						messagesList[channel.bitrix].push(messageData);
+					})
 
 					/**
 					 * Флаг есть ли не прочитанные сообщения

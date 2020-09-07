@@ -1,7 +1,7 @@
 const axios = require('axios');
 const Config = require('./Config');
 
-class Bitrix {
+export default class Bitrix {
 	channelData = {};
 
 	_config = new Config();
@@ -16,13 +16,13 @@ class Bitrix {
 
 	/**
 	 * Установка сообщения как прочитанного
+	 *
 	 * @param {string|number} chatId ID чата
 	 * @param {string|number} messageId ID сообщения
 	 * @returns {Promise<void>}
-	 * @constructor
 	 */
 	async MarkMessageAsRead(chatId, messageId) {
-		let method = 'im.dialog.read';
+		const method = 'im.dialog.read';
 
 		let result = await this.makeRequest(method, {DIALOG_ID: chatId, MESSAGE_ID: messageId});
 
@@ -30,7 +30,7 @@ class Bitrix {
 	}
 
 	async GetChannelMessages(channelId) {
-		let method = 'im.dialog.messages.get';
+		const method = 'im.dialog.messages.get';
 
 		let result = await this.makeRequest(method, {DIALOG_ID: channelId});
 
@@ -38,7 +38,7 @@ class Bitrix {
 	}
 
 	async AddChannelMessage(channelId, message) {
-		let method = 'im.message.add';
+		const method = 'im.message.add';
 
 		let result = await this.makeRequest(method, {DIALOG_ID: channelId, MESSAGE: message});
 
