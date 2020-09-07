@@ -1,7 +1,7 @@
 const axios = require('axios');
-const Config = require('./Config');
+const Config = require('./Config.ts');
 
-export default class Bitrix {
+class Bitrix {
 	channelData = {};
 
 	_config = new Config();

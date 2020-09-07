@@ -2,10 +2,10 @@
 //import {IChannel} from "./interfaces/IChannel";
 
 const {Client, MessageEmbed} = require('discord.js');
-const Bitrix = require('./Bitrix');
+const Bitrix = require('./Bitrix.ts');
 // import {Bitrix = require('./Bitrix');
 const axios = require('axios');
-const Config = require('./Config');
+const Config = require('./Config.ts');
 const colors = require('colors');
 
 const client = new Client();
