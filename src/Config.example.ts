@@ -1,3 +1,5 @@
+import {IChannel} from './interfaces/IChannel';
+
 /**
  * Configuration
  */
@@ -10,6 +12,10 @@ class Config {
 
 	BITRIX_URL = this.BITRIX_HOST + '/rest/' + this.BITRIX_USER + '/' + this.BITRIX_TOKEN + '/';
 
+	/**
+	 * Список канало для работы
+	 * @type {IChannel[]}
+	 */
 	Channels = [
 		{ id: '737549324421955616', name: 'echo', bitrix: this.BITRIX_USER, type: 'user' },
 		{ id: '737601703427440711', name: 'чат-хороших-людей', bitrix: 'chat968', type: 'chat' },

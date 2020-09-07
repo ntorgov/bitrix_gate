@@ -8,7 +8,7 @@ import json from 'rollup-plugin-json';
 const production = !process.env.ROLLUP_WATCH;
 
 export default {
-	input: 'src/main.js',
+	input: 'src/main.ts',
 	output: {
 		file: 'dst/main.js',
 		format: 'cjs', // immediately-invoked function expression — suitable for <script> tags

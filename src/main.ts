@@ -1,7 +1,9 @@
 'use strict';
+//import {IChannel} from "./interfaces/IChannel";
 
-const { Client, MessageEmbed } = require('discord.js');
+const {Client, MessageEmbed} = require('discord.js');
 const Bitrix = require('./Bitrix');
+// import {Bitrix = require('./Bitrix');
 const axios = require('axios');
 const Config = require('./Config');
 const colors = require('colors');
@@ -11,13 +13,15 @@ const messageEmbed = new MessageEmbed();
 
 const config = new Config();
 
+let messagesList = [];
+
 client.on('ready', () => {
 	// @ts-ignore
 	console.log('Logged in as '.grey + client.user.tag.cyan + '!'.grey);
 
 	let checkingCounter = 0;
 
-	setInterval(function () {
+	setInterval(function() {
 
 		if (config.DEBUG_MODE) {
 			console.group(
@@ -37,14 +41,18 @@ client.on('ready', () => {
 
 				let method = 'im.dialog.messages.get';
 
-				let data = { DIALOG_ID: channel.bitrix };
+				let data = {DIALOG_ID: channel.bitrix};
 
 				const response = axios({
 						method: 'POST',
 						url: config.BITRIX_URL + method,
-						data: data
-					}
+						data: data,
+					},
 				).then(data => {
+
+					if(typeof(messagesList[channel.bitrix])==='undefined'){
+						messagesList[channel.bitrix]=[];
+					}
 
 					/**
 					 *
@@ -59,6 +67,10 @@ client.on('ready', () => {
 					let users = data.data.result.users;
 
 					let channelId = data.data.result.chat_id;
+
+					messages.forEach(function(messageData) {
+						messagesList[channel.bitrix].push(messageData);
+					})
 
 					/**
 					 * Флаг есть ли не прочитанные сообщения
