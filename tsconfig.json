@@ -1,18 +1,24 @@
 {
   "compilerOptions": {
-    "module": "umd",
-    "target": "es5",
+    "module": "commonjs",
+    "target": "es2015",
     "moduleResolution": "node",
-    "outDir": "dst",
     "declaration": false,
     "strict": true,
     "sourceMap": true,
     "alwaysStrict": true,
     "removeComments": true,
     "esModuleInterop": false,
+    "rootDir": "./src",
     "typeRoots": [
-      "./node_modules/@types"
+      "./src/interfaces",
+      "node_modules/@types"
     ]
+  },
+  "types": ".src/interfaces/index.d.ts",
+  "typesVersions": {
+    ">=3.2": { "*": ["ts3.2/*"] },
+    ">=3.1": { "*": ["ts3.1/*"] }
   },
   "exclude": [
     "./dst/*",

@@ -1,12 +1,12 @@
 const axios = require('axios');
-const Config = require('./Config.ts');
+// const Config = require('./Config.ts');
 
-class Bitrix {
+export class Bitrix {
 	channelData = {};
 
 	_config = new Config();
 
-	constructor(channelData) {
+	constructor(channelData:any) {
 		console.log('Init');
 
 		if (channelData !== null) {
@@ -21,7 +21,7 @@ class Bitrix {
 	 * @param {string|number} messageId ID сообщения
 	 * @returns {Promise<void>}
 	 */
-	async MarkMessageAsRead(chatId, messageId) {
+	async MarkMessageAsRead(chatId:any, messageId:any) {
 		const method = 'im.dialog.read';
 
 		let result = await this.makeRequest(method, {DIALOG_ID: chatId, MESSAGE_ID: messageId});
@@ -29,7 +29,7 @@ class Bitrix {
 		return result;
 	}
 
-	async GetChannelMessages(channelId) {
+	async GetChannelMessages(channelId:any) {
 		const method = 'im.dialog.messages.get';
 
 		let result = await this.makeRequest(method, {DIALOG_ID: channelId});
@@ -37,7 +37,7 @@ class Bitrix {
 		return result;
 	}
 
-	async AddChannelMessage(channelId, message) {
+	async AddChannelMessage(channelId:any, message:any) {
 		const method = 'im.message.add';
 
 		let result = await this.makeRequest(method, {DIALOG_ID: channelId, MESSAGE: message});
@@ -45,14 +45,16 @@ class Bitrix {
 		return result;
 	}
 
-	async makeRequest(method, data) {
+	async makeRequest(method:any, data:any) {
 		console.log('Ready for request ' + method, data);
+
 
 		const response = await axios({
 				method: 'POST',
 				url: this._config.BITRIX_URL + method,
 				data: data,
 			},
+			// @ts-ignore
 		).then(async data => {
 
 			/**
