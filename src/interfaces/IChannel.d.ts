@@ -1,7 +1,7 @@
 /**
  * Структура данных канала
  */
-export interface IChannel {
+interface IChannel {
 
 	/**
 	 * ID канала в Discord

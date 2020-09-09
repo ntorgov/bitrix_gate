@@ -1,8 +1,9 @@
 'use strict';
-//import {IChannel} from "./interfaces/IChannel";
+
+/// <reference path="./interfaces/index.d.ts" />
 
 const {Client, MessageEmbed} = require('discord.js');
-const Bitrix = require('./Bitrix.ts');
+import  {Bitrix} from "./Bitrix"; // = require('./Bitrix.ts');
 // import {Bitrix = require('./Bitrix');
 const axios = require('axios');
 const Config = require('./Config.ts');
@@ -13,7 +14,11 @@ const messageEmbed = new MessageEmbed();
 
 const config = new Config();
 
-let messagesList = [];
+/**
+ * Список сообщений
+ * @var {IBitrixMessage[]}
+ */
+let messagesList:IBitrixMessage[] = [];
 
 client.on('ready', () => {
 	// @ts-ignore
@@ -21,14 +26,16 @@ client.on('ready', () => {
 
 	let checkingCounter = 0;
 
-	setInterval(function() {
+	setInterval(function () {
 
 		if (config.DEBUG_MODE) {
+
 			console.group(
+				// @ts-ignore
 				'[' + (new Date()).toString() + ']'.grey + ' Checking #'.white + checkingCounter.toString().yellow);
 		}
 
-		config.Channels.forEach((channel, index) => {
+		config.Channels.forEach((channel:IChannel, index:number) => {
 			if (channel.counter >= 3) {
 				channel.counter = 0;
 				config.Channels[index].counter = 0;
@@ -36,6 +43,7 @@ client.on('ready', () => {
 			if (channel.counter < 1 && channel.bitrix !== '') {
 
 				if (config.DEBUG_MODE) {
+					// @ts-ignore
 					console.log('Checking '.white + channel.name.yellow);
 				}
 
@@ -48,10 +56,12 @@ client.on('ready', () => {
 						url: config.BITRIX_URL + method,
 						data: data,
 					},
+					// @ts-ignore
 				).then(data => {
 
-					if(typeof(messagesList[channel.bitrix])==='undefined'){
-						messagesList[channel.bitrix]=[];
+					if (typeof (messagesList[<any>channel.bitrix]) === 'undefined') {
+						// @ts-ignore
+						messagesList[channel.bitrix] = [];
 					}
 
 					/**
@@ -68,29 +78,32 @@ client.on('ready', () => {
 
 					let channelId = data.data.result.chat_id;
 
-					messages.forEach(function(messageData) {
-						messagesList[channel.bitrix].push(messageData);
+					messages.forEach(function (messageData:IBitrixMessage) {
+						let messagePresent = false;
+						// @ts-ignore
+						for (let cnt = 0; cnt < messagesList[<any>channel.bitrix].lastId; cnt++) {
+							if (messagePresent) {
+								continue;
+							}
+							// @ts-ignore
+							if (messagesList[channel.bitrix][cnt].id === messageData.id) {
+								messagePresent = true;
+							}
+						}
+						if (!messagePresent) {
+							// @ts-ignore
+							messagesList[<any>channel.bitrix].push(messageData);
+						}
 					})
 
-					/**
-					 * Флаг есть ли не прочитанные сообщения
-					 * @type {boolean}
-					 */
 					let haveUnreadMessages = false;
 
-					if (channel.lastId === messages[0].id && channel.lastId !== 0) {
-						haveUnreadMessages = true;
-					}
+					// @ts-ignore
+					messagesList[channel.bitrix].forEach(function (element, index) {
+						if (checkingCounter > 0) {
+							if (element.unread === true) {
 
-					if (!haveUnreadMessages) {
-
-						for (let messageCounter = messages.length - 1; messageCounter >= 0; messageCounter--) {
-
-							let message = messages[messageCounter];
-
-							if (message.unread === true) {
-
-								haveUnreadMessages = true;
+								// haveUnreadMessages = true;
 
 								/**
 								 *
@@ -99,7 +112,7 @@ client.on('ready', () => {
 								let author = null;
 
 								for (let counter = 0; counter < users.length; counter++) {
-									if (users[counter].id === message.author_id) {
+									if (users[counter].id === element.author_id) {
 										author = users[counter];
 									}
 								}
@@ -107,32 +120,57 @@ client.on('ready', () => {
 								if (author !== null && author.id !== config.BITRIX_USER) {
 									// region Отправка дубликата в discord
 
-									let messageText = message.text;
+									let messageText = element.text;
 
 									if (messageText === '') {
 										messageText = '__Какой-то контент__';
 									}
 
-									const embed = new MessageEmbed().setAuthor(author.name, author.avatar).
-										setDescription(messageText);
+									const embed = new MessageEmbed().setAuthor(author.name, author.avatar).setDescription(messageText);
 
 									client.channels.cache.get(channel.id).send(embed);
+
+									// @ts-ignore
+									messagesList[channel.bitrix][index].unread = false;
+
+									haveUnreadMessages = true;
 
 									// endregion
 
 								}
 
 								if (config.DEBUG_MODE) {
-									console.log('Unread message ' + message.text);
+									console.log('Unread message ' + element.text);
 								}
 							}
 						}
-					}
+					});
+
+					/**
+					 * Флаг есть ли не прочитанные сообщения
+					 * @type {boolean}
+					 */
+					// let haveUnreadMessages = false;
+					//
+					// if (channel.lastId === messages[0].id && channel.lastId !== 0) {
+					// 	haveUnreadMessages = true;
+					// }
+					//
+					// if (!haveUnreadMessages) {
+					//
+					// 	for (let messageCounter = messages.length - 1; messageCounter >= 0; messageCounter--) {
+					//
+					// 		let message = messages[messageCounter];
+					//
+					//
+					// 	}
+					// }
 
 					// region Mark all as read
 
 					if (haveUnreadMessages) {
 
+						// @ts-ignore
 						let bitrix = new Bitrix();
 
 						bitrix.MarkMessageAsRead(channel.bitrix, messages[0].id);
@@ -144,6 +182,7 @@ client.on('ready', () => {
 					}
 
 					// endregion
+					// @ts-ignore
 				}).catch(error => {
 					if (config.DEBUG_MODE) {
 						console.warn('Error requesting messages', error);
@@ -152,7 +191,9 @@ client.on('ready', () => {
 			} else {
 				if (config.DEBUG_MODE) {
 					console.log(
+						// @ts-ignore
 						'Skipping '.white + channel.name.yellow + ' '.white + config.Channels[index].counter +
+						// @ts-ignore
 						' times '.white);
 				}
 
@@ -169,6 +210,7 @@ client.on('ready', () => {
 	}, 10000);
 });
 
+// @ts-ignore
 client.on('message', msg => {
 	if (msg.content !== '' && msg.content !== 'detect') {
 		let bitrixChannelId = 0;
@@ -181,6 +223,7 @@ client.on('message', msg => {
 
 		if (bitrixChannelId !== 0) {
 
+			// @ts-ignore
 			let bitrix = new Bitrix();
 
 			bitrix.AddChannelMessage(bitrixChannelId, msg.content);

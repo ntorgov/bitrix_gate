@@ -1,6 +1,7 @@
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import {terser} from 'rollup-plugin-terser';
+import typescript from '@rollup/plugin-typescript';
 import json from 'rollup-plugin-json';
 
 // `npm run build` -> `production` is true
@@ -15,9 +16,10 @@ export default {
 		sourcemap: true,
 	},
 	plugins: [
+		json(),
+		typescript(),
 		commonjs(),
 		resolve(),
-		json(),
 		production && terser(), // minify, but only in production
 	],
 };

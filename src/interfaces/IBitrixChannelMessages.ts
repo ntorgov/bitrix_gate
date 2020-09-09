@@ -1,4 +1,4 @@
-import {IBitrixMessage} from './IBitrixMessage';
+// import {IBitrixMessage} from './IBitrixMessage';
 import {IBitrixUser} from './IBitrixUser';
 
 /**
