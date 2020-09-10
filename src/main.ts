@@ -3,10 +3,10 @@
 /// <reference path="./interfaces/index.d.ts" />
 
 const {Client, MessageEmbed} = require('discord.js');
-import  {Bitrix} from "./Bitrix"; // = require('./Bitrix.ts');
-// import {Bitrix = require('./Bitrix');
+import  {Bitrix} from "./Bitrix";
+// const Bitrix = require('./Bitrix.ts');
 const axios = require('axios');
-const Config = require('./Config.ts');
+const Config = require('Config');
 const colors = require('colors');
 
 const client = new Client();
@@ -18,7 +18,8 @@ const config = new Config();
  * Список сообщений
  * @var {IBitrixMessage[]}
  */
-let messagesList:IBitrixMessage[] = [];
+// @ts-ignore
+let messagesList = [];
 
 client.on('ready', () => {
 	// @ts-ignore
@@ -35,7 +36,8 @@ client.on('ready', () => {
 				'[' + (new Date()).toString() + ']'.grey + ' Checking #'.white + checkingCounter.toString().yellow);
 		}
 
-		config.Channels.forEach((channel:IChannel, index:number) => {
+		// @ts-ignore
+		config.Channels.forEach((channel, index) => {
 			if (channel.counter >= 3) {
 				channel.counter = 0;
 				config.Channels[index].counter = 0;
@@ -59,7 +61,8 @@ client.on('ready', () => {
 					// @ts-ignore
 				).then(data => {
 
-					if (typeof (messagesList[<any>channel.bitrix]) === 'undefined') {
+					// @ts-ignore
+					if (typeof (messagesList[channel.bitrix]) === 'undefined') {
 						// @ts-ignore
 						messagesList[channel.bitrix] = [];
 					}
@@ -78,10 +81,11 @@ client.on('ready', () => {
 
 					let channelId = data.data.result.chat_id;
 
-					messages.forEach(function (messageData:IBitrixMessage) {
+					// @ts-ignore
+					messages.forEach(function (messageData) {
 						let messagePresent = false;
 						// @ts-ignore
-						for (let cnt = 0; cnt < messagesList[<any>channel.bitrix].lastId; cnt++) {
+						for (let cnt = 0; cnt < messagesList[channel.bitrix].lastId; cnt++) {
 							if (messagePresent) {
 								continue;
 							}
@@ -92,7 +96,7 @@ client.on('ready', () => {
 						}
 						if (!messagePresent) {
 							// @ts-ignore
-							messagesList[<any>channel.bitrix].push(messageData);
+							messagesList[channel.bitrix].push(messageData);
 						}
 					})
 
