@@ -1,4 +1,6 @@
 const axios = require('axios');
+import {Config} from "./Config";
+
 // const Config = require('./Config.ts');
 
 export class Bitrix {

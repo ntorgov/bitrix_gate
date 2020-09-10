@@ -29,7 +29,6 @@
     "start": "rollup -c && node ./src/main.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rollup -c",
-    "build3": "tsc --outDir dst && rollup -c",
     "watch": "rollup -c -w"
   },
   "type": "commonjs",
