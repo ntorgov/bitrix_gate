@@ -9,4 +9,4 @@ RUN npm install
 COPY . .
 
 EXPOSE 8080
-CMD [ "node", "bot.js" ]
+CMD [ "node", "src/main.js" ]
