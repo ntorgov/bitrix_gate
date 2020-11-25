@@ -1,37 +1,37 @@
-interface IBitrixMessage {
+class BitrixMessage {
 	/**
 	 * ID сообщения
 	 * @type {number}
 	 */
-	id: number;
+	id = 0;
 
 	/**
 	 * ID чата
 	 * @type {number}
 	 */
-	chat_id: string;
+	chat_id = 29;
 
 	/**
 	 * ID автора
 	 * @type {number}
 	 */
-	author_id: string;
+	author_id = 1;
 
 	/**
 	 * Дата
 	 * @type {string}
 	 */
-	date: string;
+	date = '';
 
 	/**
 	 * Сообщение
 	 * @type {string}
 	 */
-	text: string;
+	text = '';
 
 	/**
 	 * Флаг прочтения
 	 * @type {boolean}
 	 */
-	unread: boolean;
+	unread = false;
 }
