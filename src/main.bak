@@ -1,6 +1,6 @@
 'use strict';
 
-const {Client, MessageEmbed} = require('discord.js');
+const { Client, MessageEmbed } = require('discord.js');
 const Bitrix = require('./Bitrix');
 const axios = require('axios');
 const Config = require('./Config');
@@ -19,7 +19,7 @@ client.on('ready', () => {
 
 	let checkingCounter = 0;
 
-	setInterval(function() {
+	setInterval(function () {
 
 		if (config.DEBUG_MODE) {
 			console.group(
@@ -39,13 +39,13 @@ client.on('ready', () => {
 
 				let method = 'im.dialog.messages.get';
 
-				let data = {DIALOG_ID: channel.bitrix};
+				let data = { DIALOG_ID: channel.bitrix };
 
 				const response = axios({
 						method: 'POST',
 						url: config.BITRIX_URL + method,
-						data: data,
-					},
+						data: data
+					}
 				).then(data => {
 
 					if(typeof(messagesList[channel.bitrix])==='undefined'){

@@ -1,14 +1,12 @@
 const axios = require('axios');
-import {Config} from "./Config";
+const Config = require('./Config');
 
-// const Config = require('./Config.ts');
-
-export class Bitrix {
+class Bitrix {
 	channelData = {};
 
 	_config = new Config();
 
-	constructor(channelData:any) {
+	constructor (channelData) {
 		console.log('Init');
 
 		if (channelData !== null) {
@@ -18,45 +16,43 @@ export class Bitrix {
 
 	/**
 	 * Установка сообщения как прочитанного
-	 *
 	 * @param {string|number} chatId ID чата
 	 * @param {string|number} messageId ID сообщения
 	 * @returns {Promise<void>}
+	 * @constructor
 	 */
-	async MarkMessageAsRead(chatId:any, messageId:any) {
-		const method = 'im.dialog.read';
+	async MarkMessageAsRead (chatId, messageId) {
+		let method = 'im.dialog.read';
 
-		let result = await this.makeRequest(method, {DIALOG_ID: chatId, MESSAGE_ID: messageId});
-
-		return result;
-	}
-
-	async GetChannelMessages(channelId:any) {
-		const method = 'im.dialog.messages.get';
-
-		let result = await this.makeRequest(method, {DIALOG_ID: channelId});
+		let result = await this.makeRequest(method, { DIALOG_ID: chatId, MESSAGE_ID: messageId });
 
 		return result;
 	}
 
-	async AddChannelMessage(channelId:any, message:any) {
-		const method = 'im.message.add';
+	async GetChannelMessages (channelId) {
+		let method = 'im.dialog.messages.get';
 
-		let result = await this.makeRequest(method, {DIALOG_ID: channelId, MESSAGE: message});
+		let result = await this.makeRequest(method, { DIALOG_ID: channelId });
 
 		return result;
 	}
 
-	async makeRequest(method:any, data:any) {
+	async AddChannelMessage (channelId, message) {
+		let method = 'im.message.add';
+
+		let result = await this.makeRequest(method, { DIALOG_ID: channelId, MESSAGE: message });
+
+		return result;
+	}
+
+	async makeRequest (method, data) {
 		console.log('Ready for request ' + method, data);
-
 
 		const response = await axios({
 				method: 'POST',
 				url: this._config.BITRIX_URL + method,
-				data: data,
-			},
-			// @ts-ignore
+				data: data
+			}
 		).then(async data => {
 
 			/**

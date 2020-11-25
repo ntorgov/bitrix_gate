@@ -1,7 +1,6 @@
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
-import {terser} from 'rollup-plugin-terser';
-import typescript from '@rollup/plugin-typescript';
+import { terser } from 'rollup-plugin-terser';
 import json from 'rollup-plugin-json';
 
 // `npm run build` -> `production` is true
@@ -9,17 +8,16 @@ import json from 'rollup-plugin-json';
 const production = !process.env.ROLLUP_WATCH;
 
 export default {
-	input: 'src/main.ts',
+	input: 'src/main.js',
 	output: {
 		file: 'dst/main.js',
 		format: 'cjs', // immediately-invoked function expression — suitable for <script> tags
-		sourcemap: true,
+		sourcemap: true
 	},
 	plugins: [
-		json(),
-		typescript(),
 		commonjs(),
 		resolve(),
-		production && terser(), // minify, but only in production
-	],
+		json(),
+		production && terser() // minify, but only in production
+	]
 };
