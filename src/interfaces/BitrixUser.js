@@ -18,12 +18,12 @@ class BitrixUser {
 	last_activity_date = '2018-01-29T17:35:31+03:00';
 	mobile_last_date = false;
 	departments = [
-		50,
+		50
 	];
 	absent = false;
 	phones = {
 		'work_phone': '',
 		'personal_mobile': '',
-		'personal_phone': '',
+		'personal_phone': ''
 	};
 }
