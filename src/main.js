@@ -102,10 +102,14 @@ client.on('ready', () => {
 										messageText = '__Какой-то контент__';
 									}
 
+									client.channels.cache.get(channel.id).startTyping(2);
+
 									const embed = new MessageEmbed().setAuthor(author.name, author.avatar).
 										setDescription(messageText);
 
 									client.channels.cache.get(channel.id).send(embed);
+
+									client.channels.cache.get(channel.id).stopTyping(true);
 
 									// endregion
 
@@ -177,7 +181,11 @@ client.on('message', msg => {
 	}
 
 	if (msg.content === 'detect') {
+		client.channels.cache.get(msg.channel.id).startTyping(2);
+
 		client.channels.cache.get(msg.channel.id).send(msg.channel.name + ' id #' + msg.channel.id);
+
+		client.channels.cache.get(msg.channel.id).stopTyping(true);
 	}
 });
 
