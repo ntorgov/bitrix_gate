@@ -25,6 +25,8 @@ client.on('ready', () => {
 				'[' + (new Date()).toString() + ']'.grey + ' Checking #'.white + checkingCounter.toString().yellow);
 		}
 
+		let statusChanged = false;
+
 		config.Channels.forEach((channel, index) => {
 			if (channel.counter >= 3) {
 				channel.counter = 0;
@@ -34,6 +36,12 @@ client.on('ready', () => {
 
 				if (config.DEBUG_MODE) {
 					console.log('Checking '.white + channel.name.yellow);
+				}
+
+				if (!statusChanged) {
+					client.user.setActivity('Bitrix24', { type: 'WATCHING' }).
+						then(() => {statusChanged = true;}).
+						catch(console.error);
 				}
 
 				let method = 'im.dialog.messages.get';
@@ -137,6 +145,12 @@ client.on('ready', () => {
 					}
 
 					// endregion
+
+					if (statusChanged) {
+						client.user.setActivity(null).
+							then(() => {statusChanged = true;}).
+							catch(console.error);
+					}
 				}).catch(error => {
 					if (config.DEBUG_MODE) {
 						console.warn('Error requesting messages', error);
@@ -151,6 +165,7 @@ client.on('ready', () => {
 
 				config.Channels[index].counter++;
 			}
+
 		});
 
 		if (config.DEBUG_MODE) {
