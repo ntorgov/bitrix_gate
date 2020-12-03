@@ -110,6 +110,8 @@ client.on('ready', () => {
 										messageText = '__Какой-то контент__';
 									}
 
+									messageText = messageText.replace(/\[USER=\d+\](.+)\[\/USER\]/gm, '*_$1_*');
+
 									client.channels.cache.get(channel.id).startTyping(2);
 
 									const embed = new MessageEmbed().setAuthor(author.name, author.avatar).
