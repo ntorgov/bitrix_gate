@@ -1,7 +1,7 @@
 {
   "author": "",
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "discord.js": "^12.2.0",
     "serve": "^11.3.2"
   },
